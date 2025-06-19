@@ -1,4 +1,11 @@
+use std::{path::PathBuf, process};
+
 fn main()
 {
-        println!("Hello, world!");
+        let path: PathBuf = grit::pwd().unwrap_or_else(|err| {
+                                               eprintln!("{err}");
+                                               process::exit(1);
+                                       });
+
+        println!("{}", path.display());
 }
