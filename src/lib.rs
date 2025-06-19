@@ -227,6 +227,13 @@ mod tests
 
                 let path = run_inner(&Config { platform: (Platform::Unix) }).expect("Failed");
 
-                assert_eq!(path, "/c/");
+                if cfg!(windows)
+                {
+                        assert_eq!(path, "/c/");
+                }
+                else
+                {
+                        assert_eq!(path, "/");
+                }
         }
 }
