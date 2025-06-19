@@ -1,10 +1,9 @@
 use std::{
         env::{self},
-        path::PathBuf,
         process,
 };
 
-use grit::{Config, Platform};
+use grit::{run, Config, Platform};
 
 fn main()
 {
@@ -19,12 +18,10 @@ fn main()
                 Config::build(Platform::Windows)
         };
 
-        println!("{}", config.platform);
+        let path = run(&config).unwrap_or_else(|err| {
+                                       eprintln!("{err}");
+                                       process::exit(1)
+                               });
 
-        let path: PathBuf = grit::pwd().unwrap_or_else(|err| {
-                                               eprintln!("{err}");
-                                               process::exit(1);
-                                       });
-
-        println!("{}", path.display());
+        println!("{}", path);
 }

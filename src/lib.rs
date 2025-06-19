@@ -1,5 +1,17 @@
 use std::{env::current_dir, error::Error, fmt::Display, path::PathBuf};
 
+pub fn run(config: &Config) -> Result<String, Box<dyn Error>>
+{
+        let path = pwd();
+
+        if config.platform == Platform::Windows
+        {
+                return Ok(path.unwrap().display().to_string());
+        }
+
+        to_unix(path?)
+}
+
 pub fn pwd() -> Result<PathBuf, Box<dyn Error>>
 {
         let binding = current_dir()?;
@@ -7,6 +19,18 @@ pub fn pwd() -> Result<PathBuf, Box<dyn Error>>
         Ok(binding)
 }
 
+pub fn to_unix(path: PathBuf) -> Result<String, Box<dyn Error>>
+{
+        let path_str: String = path.display().to_string();
+
+        let mut path_str: String = path_str.replace("\\", "/");
+
+        path_str.replace_range(..2, "/c");
+
+        Ok(path_str)
+}
+
+#[derive(PartialEq)]
 pub enum Platform
 {
         Windows,
