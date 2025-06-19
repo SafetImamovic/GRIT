@@ -117,7 +117,7 @@ pub fn run() -> Result<(), Box<dyn Error>>
         Ok(())
 }
 
-fn run_inner(config: &Config) -> Result<String, Box<dyn Error>>
+pub fn run_inner(config: &Config) -> Result<String, Box<dyn Error>>
 {
         let path = pwd();
 
@@ -182,58 +182,6 @@ impl Display for Platform
                 {
                         Platform::Windows => write!(f, "Windows"),
                         Platform::Unix => write!(f, "Linux/Unix"),
-                }
-        }
-}
-
-#[cfg(test)]
-mod tests
-{
-        use super::*;
-        use std::{env, path::Path};
-
-        #[test]
-        fn test_pwd_root_dir()
-        {
-                let root = if cfg!(windows)
-                {
-                        Path::new("C:\\")
-                }
-                else
-                {
-                        Path::new("/")
-                };
-
-                env::set_current_dir(root).expect("Failed to set current directory");
-
-                let path = pwd().expect("Failed to get current directory");
-
-                assert_eq!(path, root);
-        }
-
-        #[test]
-        fn test_to_unix_conversion()
-        {
-                let root = if cfg!(windows)
-                {
-                        Path::new("C:\\")
-                }
-                else
-                {
-                        Path::new("/")
-                };
-
-                env::set_current_dir(root).expect("Failed to set current directory");
-
-                let path = run_inner(&Config { platform: (Platform::Unix) }).expect("Failed");
-
-                if cfg!(windows)
-                {
-                        assert_eq!(path, "/c/");
-                }
-                else
-                {
-                        assert_eq!(path, "/");
                 }
         }
 }
