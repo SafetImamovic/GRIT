@@ -1,4 +1,5 @@
-use grit::*;
+use grit::commands::pwd::pwd;
+use grit::config::{Config, Platform};
 use std::{env, path::Path};
 
 #[test]
@@ -15,9 +16,16 @@ fn test_pwd_root_dir()
 
         env::set_current_dir(root).expect("Failed to set current directory");
 
-        let path = grit::pwd().expect("Failed to get current directory");
+        let path = pwd(&Config {platform: (Platform::Windows)}).expect("Failed to get current directory");
 
-        assert_eq!(path, root);
+        if cfg!(windows)
+        {
+                assert_eq!(path, "C:\\");
+        }
+        else
+        {
+                assert_eq!(path, "/");
+        }
 }
 
 #[test]
@@ -34,7 +42,7 @@ fn test_to_unix_conversion()
 
         env::set_current_dir(root).expect("Failed to set current directory");
 
-        let path = grit::run_inner(&Config { platform: (Platform::Unix) }).expect("Failed");
+        let path = pwd(&Config { platform: (Platform::Unix) }).expect("Failed");
 
         if cfg!(windows)
         {
