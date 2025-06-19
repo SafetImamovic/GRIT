@@ -1,9 +1,11 @@
-use std::process;
+use std::collections::HashMap;
+use std::fs;
 use std::{env::current_dir, error::Error, fmt::Display, path::PathBuf};
 
 use clap::ValueEnum;
 
 use clap::{Parser, Subcommand};
+use serde::Deserialize;
 
 #[derive(Parser, Debug)]
 #[command(name = "grit")]
@@ -26,7 +28,7 @@ multi-purpose CLI utility written in Rust
 [font: Georgia11])
 "#
 )]
-struct Cli
+pub struct Cli
 {
         #[command(subcommand)]
         command: Commands,
@@ -35,29 +37,81 @@ struct Cli
 #[derive(Subcommand, Debug)]
 enum Commands
 {
-        #[command(about = "Prints the current working directory")]
         Pwd
         {
                 #[arg(short, long, value_enum, default_value = "windows")]
                 platform: Platform,
         },
+
+        /// Run a secret command defined in the config file
+        Secret
+        {
+                name: Option<String>,
+                args: Vec<String>,
+        },
+}
+
+#[derive(Debug, Deserialize)]
+pub struct SecretCommand
+{
+        pub description: String,
+        pub command: String,
+}
+
+pub fn load_secret_commands() -> Result<HashMap<String, SecretCommand>, Box<dyn Error>>
+{
+        let toml_str = fs::read_to_string(".secret.toml")?;
+        let map: HashMap<String, SecretCommand> = toml::from_str(&toml_str)?;
+        Ok(map)
 }
 
 pub fn run() -> Result<(), Box<dyn Error>>
 {
         let cli = Cli::parse();
 
-        match &cli.command
+        match cli.command
         {
-                Commands::Pwd { platform } => match run_inner(&Config { platform: *platform })
+                Commands::Pwd { platform } =>
                 {
-                        Ok(output) => println!("{}", output),
-                        Err(err) =>
+                        let config = Config { platform };
+                        let output = run_inner(&config)?;
+                        println!("{output}");
+                }
+
+                Commands::Secret { name, args: _ } =>
+                {
+                        let secrets = load_secret_commands()?;
+
+                        if let Some(cmd_name) = name
                         {
-                                eprintln!("{err}");
-                                process::exit(1);
+                                if let Some(secret) = secrets.get(&cmd_name)
+                                {
+                                        println!("Running secret command: {}", secret.description);
+
+                                        // If you want, you can pass `args` into the command string with templating
+                                        let command_to_run = &secret.command;
+
+                                        let status =
+                                        std::process::Command::new("powershell").arg("-c")
+                                                                                .arg(command_to_run)
+                                                                                .status()?;
+
+                                        std::process::exit(status.code().unwrap_or(1));
+                                }
+                                else
+                                {
+                                        eprintln!("Unknown secret command: {}", cmd_name);
+                                }
                         }
-                },
+                        else
+                        {
+                                println!("Available secret commands:");
+                                for (key, secret) in secrets.iter()
+                                {
+                                        println!("  {} - {}", key, secret.description);
+                                }
+                        }
+                }
         }
 
         Ok(())
@@ -171,7 +225,7 @@ mod tests
 
                 env::set_current_dir(root).expect("Failed to set current directory");
 
-                let path = run(&Config { platform: (Platform::Unix) }).expect("Failed");
+                let path = run_inner(&Config { platform: (Platform::Unix) }).expect("Failed");
 
                 assert_eq!(path, "/c/");
         }
