@@ -6,7 +6,7 @@ pub fn run(config: &Config) -> Result<String, Box<dyn Error>>
 
         if config.platform == Platform::Windows
         {
-                return Ok(path.unwrap().display().to_string());
+                return Ok(path?.display().to_string());
         }
 
         to_unix(path?)
@@ -25,7 +25,13 @@ pub fn to_unix(path: PathBuf) -> Result<String, Box<dyn Error>>
 
         let mut path_str: String = path_str.replace("\\", "/");
 
-        path_str.replace_range(..2, "/c");
+        if let Some(c) = path_str.get(0..1)
+        {
+                if path_str.get(1..2) == Some(":")
+                {
+                        path_str.replace_range(..2, &format!("/{}", c.to_lowercase()));
+                }
+        }
 
         Ok(path_str)
 }
@@ -84,6 +90,25 @@ mod tests
 
                 let path = pwd().expect("Failed to get current directory");
 
-                assert_eq!(path.display().to_string(), "C:\\");
+                assert_eq!(path, root);
+        }
+
+        #[test]
+        fn test_to_unix_conversion()
+        {
+                let root = if cfg!(windows)
+                {
+                        Path::new("C:\\")
+                }
+                else
+                {
+                        Path::new("/")
+                };
+
+                env::set_current_dir(root).expect("Failed to set current directory");
+
+                let path = run(&Config { platform: (Platform::Unix) }).expect("Failed");
+
+                assert_eq!(path, "/c/");
         }
 }
