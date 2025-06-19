@@ -1,6 +1,69 @@
+use std::process;
 use std::{env::current_dir, error::Error, fmt::Display, path::PathBuf};
 
-pub fn run(config: &Config) -> Result<String, Box<dyn Error>>
+use clap::ValueEnum;
+
+use clap::{Parser, Subcommand};
+
+#[derive(Parser, Debug)]
+#[command(name = "grit")]
+#[command(
+          version = "0.1",
+          about = r#"   
+
+  .g8"""bgd `7MM"""Mq.  `7MMF'MMP""MM""YMM 
+.dP'     `M   MM   `MM.   MM  P'   MM   `7 
+dM'       `   MM   ,M9    MM       MM      
+MM            MMmmdM9     MM       MM      
+MM.    `7MMF' MM  YM.     MM       MM      
+`Mb.     MM   MM   `Mb.   MM       MM      
+  `"bmmmdPY .JMML. .JMM..JMML.   .JMML.    
+                                           
+  General      Rust    Interface  Tool
+
+multi-purpose CLI utility written in Rust
+(ASCII art generated @ https://www.patorjk.com/software/taag/
+[font: Georgia11])
+"#
+)]
+struct Cli
+{
+        #[command(subcommand)]
+        command: Commands,
+}
+
+#[derive(Subcommand, Debug)]
+enum Commands
+{
+        #[command(about = "Prints the current working directory")]
+        Pwd
+        {
+                #[arg(short, long, value_enum, default_value = "windows")]
+                platform: Platform,
+        },
+}
+
+pub fn run() -> Result<(), Box<dyn Error>>
+{
+        let cli = Cli::parse();
+
+        match &cli.command
+        {
+                Commands::Pwd { platform } => match run_inner(&Config { platform: *platform })
+                {
+                        Ok(output) => println!("{}", output),
+                        Err(err) =>
+                        {
+                                eprintln!("{err}");
+                                process::exit(1);
+                        }
+                },
+        }
+
+        Ok(())
+}
+
+fn run_inner(config: &Config) -> Result<String, Box<dyn Error>>
 {
         let path = pwd();
 
@@ -36,7 +99,8 @@ pub fn to_unix(path: PathBuf) -> Result<String, Box<dyn Error>>
         Ok(path_str)
 }
 
-#[derive(PartialEq)]
+#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Debug, ValueEnum)]
+#[clap(rename_all = "lower")]
 pub enum Platform
 {
         Windows,

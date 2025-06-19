@@ -8,6 +8,79 @@
 
 ---
 
+## 🚀 Installation
+
+### From source
+
+Make sure you have Rust installed. Then run:
+
+```bash
+cargo install --path .
+````
+
+Or clone and install manually:
+
+```bash
+git clone https://github.com/SafetImamovic/GRIT
+cd grit
+cargo install --path .
+```
+
+---
+
+## 📝 Usage
+
+```bash
+grit <command>
+```
+
+### Examples
+
+```bash
+grit --help
+```
+**Output:**
+```bash
+  .g8"""bgd `7MM"""Mq.  `7MMF'MMP""MM""YMM
+.dP'     `M   MM   `MM.   MM  P'   MM   `7
+dM'       `   MM   ,M9    MM       MM
+MM            MMmmdM9     MM       MM
+MM.    `7MMF' MM  YM.     MM       MM
+`Mb.     MM   MM   `Mb.   MM       MM
+  `"bmmmdPY .JMML. .JMM..JMML.   .JMML.
+
+  General      Rust    Interface  Tool
+
+multi-purpose CLI utility written in Rust
+(ASCII art generated @ https://www.patorjk.com/software/taag/
+[font: Georgia11])
+
+
+Usage: grit.exe <COMMAND>
+
+Commands:
+  pwd   Prints the current working directory
+  help  Print this message or the help of the given subcommand(s)
+
+Options:
+  -h, --help     Print help
+  -V, --version  Print version
+```
+
+```bash
+grit pwd
+```
+
+**Output:**
+
+```
+/home/youruser/projects/grit
+```
+
+---
+
+
+
 ## 🔧 Features
 
 - ✅ `grit pwd`
@@ -60,46 +133,6 @@ Let me know if you’d like to add similar Unix-friendly fixes or pipe-safe util
 
 
 More functionality will be added over time, each one designed to be intuitive and easily accessible through subcommands.
-
----
-
-## 🚀 Installation
-
-### From source
-
-Make sure you have Rust installed. Then run:
-
-```bash
-cargo install --path .
-````
-
-Or clone and install manually:
-
-```bash
-git clone https://github.com/SafetImamovic/GRIT
-cd grit
-cargo install --path .
-```
-
----
-
-## 📝 Usage
-
-```bash
-grit <command>
-```
-
-### Example
-
-```bash
-grit pwd
-```
-
-**Output:**
-
-```
-/home/youruser/projects/grit
-```
 
 ---
 
