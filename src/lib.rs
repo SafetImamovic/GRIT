@@ -1,10 +1,41 @@
-use std::{env::current_dir, error::Error, path::PathBuf};
+use std::{env::current_dir, error::Error, fmt::Display, path::PathBuf};
 
 pub fn pwd() -> Result<PathBuf, Box<dyn Error>>
 {
         let binding = current_dir()?;
 
         Ok(binding)
+}
+
+pub enum Platform
+{
+        Windows,
+        Unix,
+}
+
+pub struct Config
+{
+        pub platform: Platform,
+}
+
+impl Config
+{
+        pub fn build(platform: Platform) -> Config
+        {
+                Config { platform }
+        }
+}
+
+impl Display for Platform
+{
+        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
+        {
+                match self
+                {
+                        Platform::Windows => write!(f, "Windows"),
+                        Platform::Unix => write!(f, "Linux/Unix"),
+                }
+        }
 }
 
 #[cfg(test)]
