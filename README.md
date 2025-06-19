@@ -136,6 +136,61 @@ More functionality will be added over time, each one designed to be intuitive an
 
 ---
 
+## Defining Secret Commands
+
+**GRIT** CLI supports **secret commands** that can be dynamically loaded from a configuration file called `.secret.toml`. This allows you to add custom commands without modifying the code.
+
+### File Location and Name
+
+* The file must be named `.secret.toml`
+> This will be configurable in the future.
+* Place it in the same directory where you run the CLI tool (or configure the path as needed)
+
+### File Format
+
+The `.secret.toml` file uses the TOML format, with each secret command defined as a table.
+
+Example `.secret.toml`:
+
+```toml
+[greet]
+description = "Greets the user"
+command = "echo Hello from TOML"
+
+[date]
+description = "Shows the current date"
+command = "date"
+```
+
+### Fields
+
+* **description**: A short description of the command, displayed when listing secret commands.
+* **command**: The shell command that will be executed when the secret command is invoked.
+
+### Using Secret Commands
+
+* To **list** all secret commands:
+
+  ```bash
+  grit secret
+  ```
+
+* To **run** a secret command:
+
+  ```bash
+  grit secret greet
+  ```
+
+  This will execute the shell command defined for `greet`.
+
+### Notes
+
+* Secret commands are executed via the system shell (`sh` on Unix, `powershell` on Windows).
+* You can pass additional arguments after the secret command name if your implementation supports argument substitution.
+* Keep your `.secret.toml` file secure, especially if it contains sensitive commands.
+* The CLI tool will show an error if you try to run an undefined secret command.
+
+
 ## 📦 Planned Commands
 
 * `grit find <pattern>` – A fast file search tool
