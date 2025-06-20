@@ -12,6 +12,7 @@ pub enum Platform
 pub struct Config
 {
         pub platform: Platform,
+        pub should_clip: bool,
 }
 
 impl fmt::Display for Platform

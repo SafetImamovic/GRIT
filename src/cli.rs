@@ -48,8 +48,26 @@ pub enum Commands
         #[command(about = "Print the present working directory")]
         Pwd
         {
-                #[arg(short, long, value_enum, default_value = "windows")]
+                #[arg(short,
+                      long,
+                      value_enum,
+                      default_value = "windows",
+                      help = "Choose platform.")]
                 platform: Platform,
+
+                #[arg(short,
+                      long,
+                      value_enum,
+                      default_value = "false",
+                      help = "Clips the path into the clipboard.")]
+                clip: bool,
+
+                #[arg(short,
+                      long,
+                      value_enum,
+                      default_value = "false",
+                      help = "Appends `cd ` at the beginning to turn the path into a change directory command")]
+                append: bool,
         },
 
         #[command(about = "Detailed info about the system")]

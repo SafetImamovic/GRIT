@@ -1,3 +1,5 @@
+use copypasta::{ClipboardContext, ClipboardProvider};
+
 use crate::config::Config;
 use std::{env, error::Error, path::Path};
 
@@ -14,6 +16,19 @@ pub fn pwd(config: &Config) -> Result<String, Box<dyn Error>>
         }
 
         Ok(path.display().to_string())
+}
+
+pub fn append_cd(text: &mut String)
+{
+        text.insert_str(0, "cd ");
+}
+
+pub fn clip(text: &str)
+{
+        let mut ctx = ClipboardContext::new().expect("Failed to access clipboard");
+
+        ctx.set_contents(text.to_owned())
+           .expect("Failed to copy to clipboard");
 }
 
 /// `to_unix` converts a windows path to a unix path.

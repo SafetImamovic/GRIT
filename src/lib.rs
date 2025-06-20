@@ -23,10 +23,25 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>>
 
         match &cli.command
         {
-                Some(Commands::Pwd { platform }) =>
+                Some(Commands::Pwd { platform,
+                                     clip,
+                                     append, }) =>
                 {
-                        let config = Config { platform: *platform };
-                        let output = pwd::pwd(&config)?;
+                        let config = Config { platform: *platform,
+                                              should_clip: *clip };
+
+                        let mut output: String = pwd::pwd(&config)?;
+
+                        if *append
+                        {
+                                pwd::append_cd(&mut output);
+                        }
+
+                        if *clip
+                        {
+                                pwd::clip(&output);
+                        }
+
                         println!("{output}");
                 }
 
