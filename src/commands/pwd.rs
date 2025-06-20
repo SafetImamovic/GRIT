@@ -1,6 +1,7 @@
 use crate::config::Config;
 use std::{env, error::Error, path::Path};
 
+/// `pwd` returns the `String` path.
 pub fn pwd(config: &Config) -> Result<String, Box<dyn Error>>
 {
         let path = env::current_dir()?;
@@ -15,6 +16,7 @@ pub fn pwd(config: &Config) -> Result<String, Box<dyn Error>>
         Ok(path.display().to_string())
 }
 
+/// `to_unix` converts a windows path to a unix path.
 pub fn to_unix(path: &Path) -> Result<String, Box<dyn Error>>
 {
         let mut path_str = path.display().to_string().replace("\\", "/");

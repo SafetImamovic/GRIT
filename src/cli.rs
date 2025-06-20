@@ -46,6 +46,12 @@ pub enum Commands
                 platform: Platform,
         },
 
+        #[command(about = "Detailed info about the system")]
+        Sysinfo,
+
+        #[command(about = "List all installed applications")]
+        Apps,
+
         #[command(about = "Execute secret commands defined in `.secret.toml`")]
         Secret
         {

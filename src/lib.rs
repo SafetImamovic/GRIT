@@ -4,7 +4,7 @@ pub mod config;
 
 use clap::Parser;
 use cli::{Cli, Commands};
-use commands::{pwd, secret};
+use commands::{apps, pwd, secret, sysinfo};
 use config::Config;
 
 /// Main entrypoint.
@@ -24,11 +24,12 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>>
                         let output = pwd::pwd(&config)?;
                         println!("{output}");
                 }
-
                 Commands::Secret { name, args } =>
                 {
-                        secret::run_secret_command(&secrets, name, args)?;
+                        secret::run_secret_command(&secrets, name, args)?
                 }
+                Commands::Sysinfo => sysinfo::sysinfo()?,
+                Commands::Apps => apps::list_installed_apps()?,
         }
 
         Ok(())
