@@ -4,7 +4,11 @@ pub mod config;
 
 use clap::Parser;
 use cli::{Cli, Commands};
-use commands::{apps, pwd, secret, sysinfo};
+use commands::{
+        apps, pwd,
+        secret::{self, run_secret_command},
+        sysinfo,
+};
 use config::Config;
 
 /// Main entrypoint.
@@ -14,22 +18,30 @@ use config::Config;
 pub fn run() -> Result<(), Box<dyn std::error::Error>>
 {
         let cli = Cli::parse();
+
         let secrets = secret::load_secret_commands()?;
 
-        match cli.command
+        if cli.list_secrets
         {
-                Commands::Pwd { platform } =>
+                secret::show_help_with_secrets();
+
+                std::process::exit(0);
+        }
+
+        match &cli.command
+        {
+                Some(Commands::Pwd { platform }) =>
                 {
-                        let config = Config { platform };
+                        let config = Config { platform: *platform };
                         let output = pwd::pwd(&config)?;
                         println!("{output}");
                 }
-                Commands::Secret { name, args } =>
-                {
-                        secret::run_secret_command(&secrets, name, args)?
-                }
-                Commands::Sysinfo => sysinfo::sysinfo()?,
-                Commands::Apps => apps::list_installed_apps()?,
+
+                Some(Commands::Sysinfo) => sysinfo::sysinfo()?,
+
+                Some(Commands::Apps) => apps::list_installed_apps()?,
+
+                None => run_secret_command(&secrets, cli.name, cli.args)?,
         }
 
         Ok(())

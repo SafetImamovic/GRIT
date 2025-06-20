@@ -27,7 +27,17 @@ multi-purpose CLI utility written in Rust
 pub struct Cli
 {
         #[command(subcommand)]
-        pub command: Commands,
+        pub command: Option<Commands>,
+
+        /// Execute a secret command defined in .secret.toml
+        pub name: Option<String>,
+
+        /// Pass additional arguments to the secret command
+        pub args: Vec<String>,
+
+        /// Show all secret commands
+        #[arg(long, short)]
+        pub list_secrets: bool,
 }
 
 /// There are 2 main categories of commands:
@@ -51,11 +61,4 @@ pub enum Commands
 
         #[command(about = "List all installed applications")]
         Apps,
-
-        #[command(about = "Execute secret commands defined in `.secret.toml`")]
-        Secret
-        {
-                name: Option<String>,
-                args: Vec<String>,
-        },
 }
