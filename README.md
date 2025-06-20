@@ -37,10 +37,11 @@ grit <command>
 ### Examples
 
 ```bash
-grit --help
+grit -l
 ```
 **Output:**
 ```bash
+
   .g8"""bgd `7MM"""Mq.  `7MMF'MMP""MM""YMM
 .dP'     `M   MM   `MM.   MM  P'   MM   `7
 dM'       `   MM   ,M9    MM       MM
@@ -56,15 +57,28 @@ multi-purpose CLI utility written in Rust
 [font: Georgia11])
 
 
-Usage: grit.exe <COMMAND>
+Usage: grit [OPTIONS] [NAME] [ARGS]... [COMMAND]
 
 Commands:
-  pwd   Prints the current working directory
-  help  Print this message or the help of the given subcommand(s)
+  pwd      Print the present working directory
+  sysinfo  Detailed info about the system
+  apps     List all installed applications
+  help     Print this message or the help of the given subcommand(s)
+
+Arguments:
+  [NAME]     Execute a secret command defined in .secret.toml
+  [ARGS]...  Pass additional arguments to the secret command
 
 Options:
-  -h, --help     Print help
-  -V, --version  Print version
+  -l, --list-secrets  Show all secret commands
+  -h, --help          Print help
+  -V, --version       Print version
+
+
+Secret commands (from .secret.toml):
+  greet           - Greets the user
+  date            - Shows the current date
+  ... Other secret commands ;)
 ```
 
 ```bash
@@ -172,13 +186,14 @@ command = "date"
 * To **list** all secret commands:
 
   ```bash
-  grit secret
+  grit -l 
+  grit --list-secrets
   ```
 
 * To **run** a secret command:
 
   ```bash
-  grit secret greet
+  grit greet
   ```
 
   This will execute the shell command defined for `greet`.
