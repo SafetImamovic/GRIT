@@ -16,7 +16,8 @@ fn test_pwd_root_dir()
 
         env::set_current_dir(root).expect("Failed to set current directory");
 
-        let path = pwd(&Config {platform: (Platform::Windows)}).expect("Failed to get current directory");
+        let path = pwd(&Config { platform: (Platform::Windows),
+                                 should_clip: false }).expect("Failed to get current directory");
 
         if cfg!(windows)
         {
@@ -42,7 +43,8 @@ fn test_to_unix_conversion()
 
         env::set_current_dir(root).expect("Failed to set current directory");
 
-        let path = pwd(&Config { platform: (Platform::Unix) }).expect("Failed");
+        let path = pwd(&Config { platform: (Platform::Unix),
+                                 should_clip: false }).expect("Failed");
 
         if cfg!(windows)
         {
