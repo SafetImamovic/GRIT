@@ -1,6 +1,7 @@
 use clap::CommandFactory;
+use dirs_next::home_dir;
 use serde::Deserialize;
-use std::{collections::HashMap, error::Error, fs};
+use std::{collections::HashMap, error::Error, fs, path::PathBuf};
 
 use crate::cli::Cli;
 
@@ -13,9 +14,19 @@ pub struct SecretCommand
 
 pub fn load_secret_commands() -> Result<HashMap<String, SecretCommand>, Box<dyn Error>>
 {
-        let toml_str = fs::read_to_string(".secret.toml")?;
+        // Resolve the user's home directory
+        let home = home_dir().ok_or("Could not find home directory")?;
 
-        let map: HashMap<String, SecretCommand> = toml::from_str(&toml_str)?;
+        // Construct the path to ~/.config/.grit-secret.toml
+        let secret_path: PathBuf = home.join(".config").join(".grit-secret.toml");
+
+        // Read and parse the TOML file
+        let toml_str = fs::read_to_string(&secret_path).map_err(|e| {
+                               format!("Failed to read secret file at {:?}: {}", secret_path, e)
+                       })?;
+
+        let map: HashMap<String, SecretCommand> =
+                toml::from_str(&toml_str).map_err(|e| format!("Failed to parse TOML: {}", e))?;
 
         Ok(map)
 }
@@ -40,7 +51,7 @@ pub fn run_secret_command(secrets: &HashMap<String, SecretCommand>,
                 {
                         eprintln!("Unknown secret command: {}", secret_name);
 
-                        show_help_with_secrets();
+                        list_secrets()?;
 
                         std::process::exit(1);
                 }
@@ -55,13 +66,9 @@ pub fn run_secret_command(secrets: &HashMap<String, SecretCommand>,
         }
 }
 
-pub fn show_help_with_secrets()
+pub fn list_secrets() -> Result<(), Box<dyn Error>>
 {
-        let mut cmd = Cli::command();
-
-        cmd.print_help().unwrap();
-
-        println!("\n\nSecret commands (from .secret.toml):");
+        println!("Secret commands (from ~/.config/.grit-secret.toml):\n");
 
         match load_secret_commands()
         {
@@ -74,7 +81,9 @@ pub fn show_help_with_secrets()
                 }
                 Err(_) =>
                 {
-                        println!("  (None found or failed to load .secret.toml)");
+                        println!("  (None found or failed to load ~/.config/.grit-secret.toml,)");
                 }
         }
+
+        Ok(())
 }

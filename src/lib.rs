@@ -14,19 +14,12 @@ use config::Config;
 /// Main entrypoint.
 ///
 /// Parses incomming commands and arguemnts via `clap`
-/// and loads the secret commands from .secret.toml
+/// and loads the secret commands from ~/.config/.grit-secret.toml
 pub fn run() -> Result<(), Box<dyn std::error::Error>>
 {
         let cli = Cli::parse();
 
         let secrets = secret::load_secret_commands()?;
-
-        if cli.list_secrets
-        {
-                secret::show_help_with_secrets();
-
-                std::process::exit(0);
-        }
 
         match &cli.command
         {
@@ -40,6 +33,8 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>>
                 Some(Commands::Sysinfo) => sysinfo::sysinfo()?,
 
                 Some(Commands::Apps) => apps::list_installed_apps()?,
+
+                Some(Commands::ListSecret) => secret::list_secrets()?,
 
                 None => run_secret_command(&secrets, cli.name, cli.args)?,
         }

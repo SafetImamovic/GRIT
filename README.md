@@ -57,28 +57,22 @@ multi-purpose CLI utility written in Rust
 [font: Georgia11])
 
 
-Usage: grit [OPTIONS] [NAME] [ARGS]... [COMMAND]
+Usage: grit [NAME] [ARGS]... [COMMAND]
 
 Commands:
-  pwd      Print the present working directory
-  sysinfo  Detailed info about the system
-  apps     List all installed applications
-  help     Print this message or the help of the given subcommand(s)
+  pwd          Print the present working directory
+  sysinfo      Detailed info about the system
+  apps         List all installed applications
+  list-secret  List all hidden commands
+  help         Print this message or the help of the given subcommand(s)
 
 Arguments:
-  [NAME]     Execute a secret command defined in .secret.toml
+  [NAME]     Execute a secret command defined in ~/.config/.grit-secret.toml
   [ARGS]...  Pass additional arguments to the secret command
 
 Options:
-  -l, --list-secrets  Show all secret commands
-  -h, --help          Print help
-  -V, --version       Print version
-
-
-Secret commands (from .secret.toml):
-  greet           - Greets the user
-  date            - Shows the current date
-  ... Other secret commands ;)
+  -h, --help     Print help
+  -V, --version  Print version
 ```
 
 ```bash
@@ -152,19 +146,28 @@ More functionality will be added over time, each one designed to be intuitive an
 
 ## Defining Secret Commands
 
-**GRIT** CLI supports **secret commands** that can be dynamically loaded from a configuration file called `.secret.toml`. This allows you to add custom commands without modifying the code.
+**GRIT** CLI supports **secret commands** that can be dynamically loaded from a configuration file called `.grit-secret.toml`. This allows you to add custom commands without modifying the code.
 
 ### File Location and Name
 
-* The file must be named `.secret.toml`
-> This will be configurable in the future.
-* Place it in the same directory where you run the CLI tool (or configure the path as needed)
+Within your `home`/`~` directory create a `.config` directory, then create `.grit-secret.toml` within that directory.
+
+```
+mkdir -p ~/.config
+touch ~/.config/.grit-secret.toml
+```
+
+```
+~/
+└── .config/
+    └── .grit-secret.toml
+```
 
 ### File Format
 
-The `.secret.toml` file uses the TOML format, with each secret command defined as a table.
+The `.grit-secret.toml` file uses the TOML format, with each secret command defined as a table.
 
-Example `.secret.toml`:
+Example `.grit-secret.toml`:
 
 ```toml
 [greet]
@@ -186,8 +189,7 @@ command = "date"
 * To **list** all secret commands:
 
   ```bash
-  grit -l 
-  grit --list-secrets
+  grit list-secrets
   ```
 
 * To **run** a secret command:
@@ -202,7 +204,7 @@ command = "date"
 
 * Secret commands are executed via the system shell (`sh` on Unix, `powershell` on Windows).
 * You can pass additional arguments after the secret command name if your implementation supports argument substitution.
-* Keep your `.secret.toml` file secure, especially if it contains sensitive commands.
+* Keep your `.grit-secret.toml` file secure, especially if it contains sensitive commands.
 * The CLI tool will show an error if you try to run an undefined secret command.
 
 

@@ -29,15 +29,11 @@ pub struct Cli
         #[command(subcommand)]
         pub command: Option<Commands>,
 
-        /// Execute a secret command defined in .secret.toml
+        /// Execute a secret command defined in ~/.config/.grit-secret.toml
         pub name: Option<String>,
 
         /// Pass additional arguments to the secret command
         pub args: Vec<String>,
-
-        /// Show all secret commands
-        #[arg(long, short)]
-        pub list_secrets: bool,
 }
 
 /// There are 2 main categories of commands:
@@ -45,7 +41,7 @@ pub struct Cli
 ///     - Secret commands
 ///
 /// Predefined commands are defined in code while
-/// secret commands are defined in the .secret.toml file.
+/// secret commands are defined in the ~/.config/.grit-secret.toml
 #[derive(Subcommand, Debug)]
 pub enum Commands
 {
@@ -61,4 +57,7 @@ pub enum Commands
 
         #[command(about = "List all installed applications")]
         Apps,
+
+        #[command(about = "List all hidden commands")]
+        ListSecret,
 }
