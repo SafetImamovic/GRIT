@@ -1,5 +1,6 @@
-use crate::config::Platform;
 use clap::{Parser, Subcommand};
+
+use crate::commands::pwd::Platform;
 
 /// `Cli` derives from `Parser` which uses the `parse()` method
 /// to gather commands and arguemnts passed via CLI.
@@ -29,7 +30,7 @@ pub struct Cli
         #[command(subcommand)]
         pub command: Option<Commands>,
 
-        /// Execute a secret command defined in ~/.config/.grit-secret.toml
+        /// Execute a secret command defined in ~/.config/.grit/.grit-secret.toml
         pub name: Option<String>,
 
         /// Pass additional arguments to the secret command
@@ -78,4 +79,7 @@ pub enum Commands
 
         #[command(about = "List all hidden commands")]
         ListSecret,
+
+        #[command(about = "List shells")]
+        Shells,
 }

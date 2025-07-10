@@ -1,6 +1,7 @@
 pub mod cli;
 pub mod commands;
 pub mod config;
+pub mod shell;
 
 use clap::Parser;
 use cli::{Cli, Commands};
@@ -9,7 +10,6 @@ use commands::{
         secret::{self, run_secret_command},
         sysinfo,
 };
-use config::Config;
 
 /// Main entrypoint.
 ///
@@ -17,6 +17,8 @@ use config::Config;
 /// and loads the secret commands from ~/.config/.grit-secret.toml
 pub fn run() -> Result<(), Box<dyn std::error::Error>>
 {
+        let cfg: config::Config = config::Config::new();
+
         let cli = Cli::parse();
 
         let secrets = secret::load_secret_commands()?;
@@ -27,8 +29,8 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>>
                                      clip,
                                      append, }) =>
                 {
-                        let config = Config { platform: *platform,
-                                              should_clip: *clip };
+                        let config = pwd::Config { platform: *platform,
+                                                   should_clip: *clip };
 
                         let mut output: String = pwd::pwd(&config)?;
 
@@ -50,6 +52,8 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>>
                 Some(Commands::Apps) => apps::list_installed_apps()?,
 
                 Some(Commands::ListSecret) => secret::list_secrets()?,
+
+                Some(Commands::Shells) => cfg.list_shells(),
 
                 None => run_secret_command(&secrets, cli.name, cli.args)?,
         }

@@ -1,28 +1,46 @@
-use clap::ValueEnum;
-use std::fmt;
-
-#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Debug, ValueEnum)]
-#[clap(rename_all = "lower")]
-pub enum Platform
-{
-        Windows,
-        Unix,
-}
+use std::env;
 
 pub struct Config
 {
-        pub platform: Platform,
-        pub should_clip: bool,
+        shells: Vec<String>, // Made private to enforce controlled access
 }
 
-impl fmt::Display for Platform
+impl Config
 {
-        fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
+        pub fn new() -> Self
         {
-                match self
+                let shell = Self::get_default_shell();
+                Self { shells: vec![shell] }
+        }
+
+        fn get_default_shell() -> String
+        {
+                if cfg!(windows)
                 {
-                        Platform::Windows => write!(f, "Windows"),
-                        Platform::Unix => write!(f, "Linux/Unix"),
+                        env::var("COMSPEC").unwrap_or_else(|_| "cmd.exe".into())
+                }
+                else
+                {
+                        env::var("SHELL").unwrap_or_else(|_| "/bin/sh".into())
+                }
+        }
+
+        pub fn default_shell(&self) -> &str
+        {
+                // Prefer returning data over printing in library code
+                self.shells.first().expect("Always has at least one shell")
+        }
+
+        pub fn all_shells(&self) -> &[String]
+        {
+                &self.shells
+        }
+
+        pub fn list_shells(&self)
+        {
+                for i in self.all_shells()
+                {
+                        println!("{}", i);
                 }
         }
 }

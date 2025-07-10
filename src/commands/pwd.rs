@@ -1,14 +1,40 @@
+use clap::ValueEnum;
 use copypasta::{ClipboardContext, ClipboardProvider};
-
-use crate::config::Config;
+use std::fmt;
 use std::{env, error::Error, path::Path};
+
+#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Debug, ValueEnum)]
+#[clap(rename_all = "lower")]
+pub enum Platform
+{
+        Windows,
+        Unix,
+}
+
+pub struct Config
+{
+        pub platform: Platform,
+        pub should_clip: bool,
+}
+
+impl fmt::Display for Platform
+{
+        fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result
+        {
+                match self
+                {
+                        Platform::Windows => write!(f, "Windows"),
+                        Platform::Unix => write!(f, "Linux/Unix"),
+                }
+        }
+}
 
 /// `pwd` returns the `String` path.
 pub fn pwd(config: &Config) -> Result<String, Box<dyn Error>>
 {
         let path = env::current_dir()?;
 
-        if config.platform != crate::config::Platform::Windows
+        if config.platform != Platform::Windows
         {
                 let result = to_unix(&path);
 

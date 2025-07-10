@@ -3,7 +3,7 @@ use dirs_next::home_dir;
 use serde::Deserialize;
 use std::{collections::HashMap, error::Error, fs, path::PathBuf};
 
-use crate::{cli::Cli, commands::secret};
+use crate::cli::Cli;
 
 #[derive(Debug, Deserialize)]
 pub struct SecretCommand
@@ -14,13 +14,12 @@ pub struct SecretCommand
 
 pub fn load_secret_commands() -> Result<HashMap<String, SecretCommand>, Box<dyn Error>>
 {
-        // Resolve the user's home directory
         let home = home_dir().ok_or("Could not find home directory")?;
 
-        // Construct the path to ~/.config/.grit-secret.toml
-        let secret_path: PathBuf = home.join(".config").join(".grit-secret.toml");
+        let secret_path: PathBuf = home.join(".config/")
+                                       .join(".grit/")
+                                       .join(".grit-secret.toml");
 
-        // Read and parse the TOML file
         let toml_str = fs::read_to_string(&secret_path).map_err(|e| {
                                format!("Failed to read secret file at {:?}: {}", secret_path, e)
                        })?;
@@ -41,10 +40,10 @@ pub fn run_secret_command(secrets: &HashMap<String, SecretCommand>,
                 if let Some(secret) = secrets.get(&secret_name)
                 {
                         println!("Running secret command: {}", secret.description);
-                        let status = std::process::Command::new("bash").arg("-c")
-                                                                       .arg(&secret.command)
-                                                                       .args(_args)
-                                                                       .status()?;
+                        let status = std::process::Command::new("/bin/bash").arg("-c")
+                                                                            .arg(&secret.command)
+                                                                            .args(_args)
+                                                                            .status()?;
                         std::process::exit(status.code().unwrap_or(1));
                 }
                 else
@@ -68,7 +67,7 @@ pub fn run_secret_command(secrets: &HashMap<String, SecretCommand>,
 
 pub fn list_secrets() -> Result<(), Box<dyn Error>>
 {
-        println!("Secret commands (from ~/.config/.grit-secret.toml):\n");
+        println!("Secret commands (from ~/.config/.grit/.grit-secret.toml):\n");
 
         match load_secret_commands()
         {
@@ -87,7 +86,7 @@ pub fn list_secrets() -> Result<(), Box<dyn Error>>
                 }
                 Err(_) =>
                 {
-                        println!("  (None found or failed to load ~/.config/.grit-secret.toml,)");
+                        println!("  (None found or failed to load ~/.config/.grit/.grit-secret.toml,)");
                 }
         }
 
