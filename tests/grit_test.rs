@@ -1,5 +1,4 @@
-use grit::commands::pwd::pwd;
-use grit::config::{Config, Platform};
+use grit::commands::pwd::{Config, Platform, pwd};
 use std::{env, path::Path};
 
 #[test]
