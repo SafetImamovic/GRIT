@@ -55,7 +55,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>>
 
                 Some(Commands::Shells) => cfg.list_shells(),
 
-                None => run_secret_command(&secrets, cli.name, cli.args)?,
+                None => run_secret_command(&cfg, &secrets, cli.name, cli.args)?,
         }
 
         Ok(())

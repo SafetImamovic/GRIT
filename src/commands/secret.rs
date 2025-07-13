@@ -3,7 +3,7 @@ use dirs_next::home_dir;
 use serde::Deserialize;
 use std::{collections::HashMap, error::Error, fs, path::PathBuf};
 
-use crate::cli::Cli;
+use crate::{cli::Cli, config::Config};
 
 #[derive(Debug, Deserialize)]
 pub struct SecretCommand
@@ -30,7 +30,8 @@ pub fn load_secret_commands() -> Result<HashMap<String, SecretCommand>, Box<dyn 
         Ok(map)
 }
 
-pub fn run_secret_command(secrets: &HashMap<String, SecretCommand>,
+pub fn run_secret_command(config: &Config,
+                          secrets: &HashMap<String, SecretCommand>,
                           name: Option<String>,
                           _args: Vec<String>)
                           -> Result<(), Box<dyn Error>>
@@ -40,10 +41,10 @@ pub fn run_secret_command(secrets: &HashMap<String, SecretCommand>,
                 if let Some(secret) = secrets.get(&secret_name)
                 {
                         println!("Running secret command: {}", secret.description);
-                        let status = std::process::Command::new("/bin/bash").arg("-c")
-                                                                            .arg(&secret.command)
-                                                                            .args(_args)
-                                                                            .status()?;
+                        let status = std::process::Command::new(config.default_shell()).arg("-c")
+                                                                 .arg(&secret.command)
+                                                                 .args(_args)
+                                                                 .status()?;
                         std::process::exit(status.code().unwrap_or(1));
                 }
                 else

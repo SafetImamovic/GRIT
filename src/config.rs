@@ -2,7 +2,7 @@ use std::env;
 
 pub struct Config
 {
-        shells: Vec<String>, // Made private to enforce controlled access
+        pub shells: Vec<String>,
 }
 
 impl Config
@@ -10,6 +10,7 @@ impl Config
         pub fn new() -> Self
         {
                 let shell = Self::get_default_shell();
+
                 Self { shells: vec![shell] }
         }
 
@@ -17,7 +18,8 @@ impl Config
         {
                 if cfg!(windows)
                 {
-                        env::var("COMSPEC").unwrap_or_else(|_| "cmd.exe".into())
+                        //env::var("COMSPEC").unwrap_or_else(|_| "powershell".into())
+                        "powershell".to_string()
                 }
                 else
                 {
@@ -27,7 +29,6 @@ impl Config
 
         pub fn default_shell(&self) -> &str
         {
-                // Prefer returning data over printing in library code
                 self.shells.first().expect("Always has at least one shell")
         }
 
