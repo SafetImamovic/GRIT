@@ -11,6 +11,8 @@ use commands::{
         sysinfo,
 };
 
+use crate::commands::oxide;
+
 /// Main entrypoint.
 ///
 /// Parses incomming commands and arguemnts via `clap`
@@ -54,6 +56,8 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>>
                 Some(Commands::ListSecret) => secret::list_secrets()?,
 
                 Some(Commands::Shells) => cfg.list_shells(),
+
+                Some(Commands::Oxide) => oxide::render_oxide(),
 
                 None => run_secret_command(&cfg, &secrets, cli.name, cli.args)?,
         }

@@ -82,4 +82,7 @@ pub enum Commands
 
         #[command(about = "List shells")]
         Shells,
+
+        #[command(about = "Oxide Render Engine")]
+        Oxide,
 }
