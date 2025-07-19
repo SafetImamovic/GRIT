@@ -41,7 +41,15 @@ impl Config
         {
                 for i in self.all_shells()
                 {
-                        println!("{}", i);
+                        println!("{i}");
                 }
+        }
+}
+
+impl Default for Config
+{
+        fn default() -> Self
+        {
+                Self::new()
         }
 }

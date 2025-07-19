@@ -21,11 +21,11 @@ pub fn load_secret_commands() -> Result<HashMap<String, SecretCommand>, Box<dyn 
                                        .join(".grit-secret.toml");
 
         let toml_str = fs::read_to_string(&secret_path).map_err(|e| {
-                               format!("Failed to read secret file at {:?}: {}", secret_path, e)
+                               format!("Failed to read secret file at {secret_path:?}: {e}")
                        })?;
 
         let map: HashMap<String, SecretCommand> =
-                toml::from_str(&toml_str).map_err(|e| format!("Failed to parse TOML: {}", e))?;
+                toml::from_str(&toml_str).map_err(|e| format!("Failed to parse TOML: {e}"))?;
 
         Ok(map)
 }
@@ -49,7 +49,7 @@ pub fn run_secret_command(config: &Config,
                 }
                 else
                 {
-                        eprintln!("Unknown secret command: {}", secret_name);
+                        eprintln!("Unknown secret command: {secret_name}");
 
                         list_secrets()?;
 
@@ -74,7 +74,7 @@ pub fn list_secrets() -> Result<(), Box<dyn Error>>
         {
                 Ok(secrets) =>
                 {
-                        if secrets.len() == 0
+                        if secrets.is_empty()
                         {
                                 println!("There are no secret commands currently.");
                                 return Ok(());
