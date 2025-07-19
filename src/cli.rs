@@ -10,19 +10,20 @@ use crate::commands::pwd::Platform;
           version = "0.1",
           about = r#"   
 
-  .g8"""bgd `7MM"""Mq.  `7MMF'MMP""MM""YMM 
-.dP'     `M   MM   `MM.   MM  P'   MM   `7 
-dM'       `   MM   ,M9    MM       MM      
-MM            MMmmdM9     MM       MM      
-MM.    `7MMF' MM  YM.     MM       MM      
-`Mb.     MM   MM   `Mb.   MM       MM      
-  `"bmmmdPY .JMML. .JMM..JMML.   .JMML.    
+      .g8"""bgd `7MM"""Mq.  `7MMF'MMP""MM""YMM 
+    .dP'     `M   MM   `MM.   MM  P'   MM   `7 
+    dM'       `   MM   ,M9    MM       MM      
+    MM            MMmmdM9     MM       MM      
+    MM.    `7MMF' MM  YM.     MM       MM      
+    `Mb.     MM   MM   `Mb.   MM       MM      
+      `"bmmmdPY .JMML. .JMM..JMML.   .JMML.    
                                            
-  General      Rust    Interface  Tool
+      General      Rust    Interface  Tool
 
 multi-purpose CLI utility written in Rust
 (ASCII art generated @ https://www.patorjk.com/software/taag/
 [font: Georgia11])
+
 "#
 )]
 pub struct Cli
