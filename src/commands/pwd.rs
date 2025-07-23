@@ -34,14 +34,16 @@ pub fn pwd(config: &Config) -> Result<String, Box<dyn Error>>
 {
         let path = env::current_dir()?;
 
-        if config.platform != Platform::Windows
+        let result = if config.platform != Platform::Windows
         {
-                let result = to_unix(&path);
-
-                return result;
+                to_unix(&path)?
         }
+        else
+        {
+                path.display().to_string()
+        };
 
-        Ok(path.display().to_string())
+        Ok(format!("\"{}\"", result))
 }
 
 pub fn append_cd(text: &mut String)
