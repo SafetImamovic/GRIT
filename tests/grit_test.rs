@@ -20,11 +20,11 @@ fn test_pwd_root_dir()
 
         if cfg!(windows)
         {
-                assert_eq!(path, "C:\\");
+                assert_eq!(path, "\"C:\\\"");
         }
         else
         {
-                assert_eq!(path, "/");
+                assert_eq!(path, "\"/c/\"");
         }
 }
 
@@ -47,7 +47,7 @@ fn test_to_unix_conversion()
 
         if cfg!(windows)
         {
-                assert_eq!(path, "/c/");
+                assert_eq!(path, "\"/c/\"");
         }
         else
         {
