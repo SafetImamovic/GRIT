@@ -51,6 +51,6 @@ fn test_to_unix_conversion()
         }
         else
         {
-                assert_eq!(path, "/");
+                assert_eq!(path, "\"/\"");
         }
 }
