@@ -3,23 +3,25 @@ use std::env;
 pub struct Config
 {
         pub shells: Vec<String>,
+        pub clear_default_lines: u16
 }
 
 impl Default for Config
 {
         fn default() -> Self
         {
-                Self::new()
+                Self::new(200u16)
         }
 }
 
 impl Config
 {
-        pub fn new() -> Self
+        pub fn new(clear_default_lines: u16) -> Self
         {
                 let shell = Self::get_default_shell();
 
-                Self { shells: vec![shell] }
+                Self { shells: vec![shell],
+                       clear_default_lines }
         }
 
         fn get_default_shell() -> String

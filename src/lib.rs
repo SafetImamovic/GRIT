@@ -11,7 +11,7 @@ use commands::{
         sysinfo,
 };
 
-use crate::commands::oxide;
+use crate::commands::{clear, oxide};
 
 /// Main entrypoint.
 ///
@@ -19,7 +19,7 @@ use crate::commands::oxide;
 /// and loads the secret commands from ~/.config/.grit-secret.toml
 pub fn run() -> Result<(), Box<dyn std::error::Error>>
 {
-        let cfg: config::Config = config::Config::new();
+        let cfg: config::Config = config::Config::new(200u16);
 
         let cli = Cli::parse();
 
@@ -58,6 +58,8 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>>
                 Some(Commands::Shells) => cfg.list_shells(),
 
                 Some(Commands::Oxide) => oxide::render_oxide(),
+
+                Some(Commands::Clear) => clear::clear(&cfg, &cli)?,
 
                 None => run_secret_command(&cfg, &secrets, cli.name, cli.args)?,
         }

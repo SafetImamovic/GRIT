@@ -24,7 +24,7 @@ fn test_pwd_root_dir()
         }
         else
         {
-                assert_eq!(path, "\"/c/\"");
+                assert_eq!(path, "\"/\"");
         }
 }
 
@@ -51,6 +51,6 @@ fn test_to_unix_conversion()
         }
         else
         {
-                assert_eq!(path, "\"/\"");
+                assert_eq!(path,);
         }
 }

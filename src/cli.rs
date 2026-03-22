@@ -86,4 +86,7 @@ pub enum Commands
 
         #[command(about = "Oxide Render Engine")]
         Oxide,
+
+        #[command(about = "Psuedo Clear Screen")]
+        Clear
 }
