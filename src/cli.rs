@@ -88,5 +88,5 @@ pub enum Commands
         Oxide,
 
         #[command(about = "Psuedo Clear Screen")]
-        Clear
+        Clear,
 }

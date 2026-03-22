@@ -3,7 +3,7 @@ use std::env;
 pub struct Config
 {
         pub shells: Vec<String>,
-        pub clear_default_lines: u16
+        pub clear_default_lines: u16,
 }
 
 impl Default for Config
